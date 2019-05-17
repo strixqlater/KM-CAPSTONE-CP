@@ -24,7 +24,6 @@
 #define CHECKSUM 29
 
 #include <ESP8266_Lib.h>
-#include <SoftwareSerial.h>
 #include <BlynkSimpleShieldEsp8266.h>
 #include <DHT.h>
 
@@ -69,12 +68,12 @@ void setup() {
   
   Blynk.begin(auth, wifi, ssid, pass);
 
-  timer.setInterval(1000L, myTimerEvent1);
-  timer.setInterval(1000L, myTimerEvent2);
-  timer.setInterval(1000L, myTimerEvent3);
-  timer.setInterval(1000L, myTimerEvent4);
-  timer.setInterval(1000L, myTimerEvent5);
-  timer.setInterval(1000L, myTimerEvent6);
+  timer.setInterval(3000L, myTimerEvent1);
+  timer.setInterval(3000L, myTimerEvent2);
+  timer.setInterval(3000L, myTimerEvent3);
+  timer.setInterval(3000L, myTimerEvent4);
+  timer.setInterval(3000L, myTimerEvent5);
+  timer.setInterval(3000L, myTimerEvent6);
 }
 
 void myTimerEvent1() { // temp
@@ -107,16 +106,11 @@ void loop() {
   timer.run();
   dht_read();
   pms7003_read();
-  Serial.println(PM01);
-  Serial.println(PM25);
-  Serial.println(PM10);
-  Serial.println();
 }
 
 void dht_read() {
   t = dht.readTemperature();
   h = dht.readHumidity();
-  delay(100);
 }
 
 void pms7003_read() {
@@ -156,4 +150,6 @@ void pms7003_read() {
   else{
     Serial.println("PMS7003 NOT available");
   }
+
+  delay(1000);
 }
