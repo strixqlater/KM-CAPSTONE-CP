@@ -7,6 +7,9 @@
 
 #define MQ2_PIN A0
 
+#define DC_MOTOR_A1 6
+#define DC_MOTOR_A2 7
+
 #define START_1 0x42
 #define START_2 0x4d
 #define DATA_LENGTH_H 0
@@ -26,13 +29,17 @@
 #include <ESP8266_Lib.h>
 #include <BlynkSimpleShieldEsp8266.h>
 #include <DHT.h>
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 BlynkTimer timer;
 
-char auth[] = "*";
+char auth[] = "65bb14d27fce4e81ac0e4cace9e20e1b";
 
-char ssid[] = "*";
-char pass[] = "*";
+char ssid[] = "MATSUDO 2763";
+char pass[] = "icnxkmaster";
 
 float h;
 float t;
@@ -65,15 +72,22 @@ void setup() {
 
   Serial3.begin(9600);
   delay(10);
+
+  lcd.begin();
+
+  pinMode(DC_MOTOR_A1, OUTPUT);
+  pinMode(DC_MOTOR_A2, OUTPUT);
+
+  digitalWrite(DC_MOTOR_A1, LOW);
   
   Blynk.begin(auth, wifi, ssid, pass);
 
-  timer.setInterval(3000L, myTimerEvent1);
-  timer.setInterval(3000L, myTimerEvent2);
-  timer.setInterval(3000L, myTimerEvent3);
-  timer.setInterval(3000L, myTimerEvent4);
-  timer.setInterval(3000L, myTimerEvent5);
-  timer.setInterval(3000L, myTimerEvent6);
+  timer.setInterval(1000L, myTimerEvent1);
+  timer.setInterval(1000L, myTimerEvent2);
+  timer.setInterval(1000L, myTimerEvent3);
+  timer.setInterval(1000L, myTimerEvent4);
+  timer.setInterval(1000L, myTimerEvent5);
+  timer.setInterval(1000L, myTimerEvent6);
 }
 
 void myTimerEvent1() { // temp
@@ -106,6 +120,8 @@ void loop() {
   timer.run();
   dht_read();
   pms7003_read();
+  // dc_run();
+  // lcd_run();
 }
 
 void dht_read() {
@@ -133,6 +149,11 @@ void pms7003_read() {
           PM01  = GetPM_Data(chrData, PM1_0_ATMOSPHERE_H, PM1_0_ATMOSPHERE_L);
           PM25  = GetPM_Data(chrData, PM2_5_ATMOSPHERE_H, PM2_5_ATMOSPHERE_L);
           PM10  = GetPM_Data(chrData, PM10_ATMOSPHERE_H, PM10_ATMOSPHERE_L);
+
+          if(PM01 > 500) PM01 = 0;
+          if(PM25 > 500) PM25 = 0;
+          if(PM10 > 500) PM10 = 0;
+          
           Serial.print("PM1.0=");
           Serial.print(PM01);
           Serial.print(",PM2.5=");
@@ -153,3 +174,26 @@ void pms7003_read() {
 
   delay(1000);
 }
+
+/*
+void dc_run() {
+  if(PM10 > 2) {
+    digitalWrite(DC_MOTOR_A1, LOW);
+    digitalWrite(DC_MOTOR_A2, HIGH);
+  }
+
+  else {
+    digitalWrite(DC_MOTOR_A1, LOW);
+    digitalWrite(DC_MOTOR_A2, LOW);
+  }
+}
+
+
+void lcd_run() {
+  lcd.clear();
+  lcd.print("Temp: ");
+  lcd.print(t);
+  lcd.print( "Humid: ");
+  lcd.print(h);
+}
+*/
