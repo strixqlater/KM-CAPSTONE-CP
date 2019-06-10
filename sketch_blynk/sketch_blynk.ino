@@ -29,10 +29,6 @@
 #include <ESP8266_Lib.h>
 #include <BlynkSimpleShieldEsp8266.h>
 #include <DHT.h>
-#include <Wire.h>
-#include <LiquidCrystal_I2C.h>
-
-LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 BlynkTimer timer;
 
@@ -72,8 +68,6 @@ void setup() {
 
   Serial3.begin(9600);
   delay(10);
-
-  lcd.begin();
 
   pinMode(DC_MOTOR_A1, OUTPUT);
   pinMode(DC_MOTOR_A2, OUTPUT);
@@ -120,8 +114,6 @@ void loop() {
   timer.run();
   dht_read();
   pms7003_read();
-  // dc_run();
-  // lcd_run();
 }
 
 void dht_read() {
@@ -174,26 +166,3 @@ void pms7003_read() {
 
   delay(1000);
 }
-
-/*
-void dc_run() {
-  if(PM10 > 2) {
-    digitalWrite(DC_MOTOR_A1, LOW);
-    digitalWrite(DC_MOTOR_A2, HIGH);
-  }
-
-  else {
-    digitalWrite(DC_MOTOR_A1, LOW);
-    digitalWrite(DC_MOTOR_A2, LOW);
-  }
-}
-
-
-void lcd_run() {
-  lcd.clear();
-  lcd.print("Temp: ");
-  lcd.print(t);
-  lcd.print( "Humid: ");
-  lcd.print(h);
-}
-*/
